@@ -2,32 +2,35 @@
 #include <Eigen/Dense>
 #include "KalmanFusion.h"
 #include "KalmanFilter.h"
+#include <ctime>
+#include <cstdlib>
+#include "WriteFile.h"
 
 using namespace std;
 using namespace Eigen;
 
 // 打印模块开关（按需设置为 1 或 0）
-#define TRUE_DATA                      1
-#define CAM_DATA                       1
-#define CAM_KALMANFILTER_DATA          1
-#define RADAR_DATA                     1
-#define RADAR_KALMANFILTER_DATA        1
-#define FUSION_DATA                    1
-#define FUSION_KALMANFILTER_DATA       1
+#define TRUE_DATA                      0
+#define CAM_DATA                       0
+#define CAM_KALMANFILTER_DATA          0
+#define RADAR_DATA                     0
+#define RADAR_KALMANFILTER_DATA        0
+#define FUSION_DATA                    0
+#define FUSION_KALMANFILTER_DATA       0
 
 //物体初始值
 const double initial_X = 5;
 const double initial_Y = 10;
 
-
 int main() {
+    srand(static_cast<unsigned int>(time(nullptr)));  // 设置随机种子
     // 初始状态估计为 (0, 0)，初始协方差为单位矩阵
     Eigen::Vector2d init_estimate(initial_X, initial_Y);
     Eigen::Matrix2d init_covariance = Eigen::Matrix2d::Identity();
 
     KalmanFilter kf_cam(0.01, 0.1, init_estimate, init_covariance);  // Q, R, 初始估计, 初始协方差
     KalmanFilter kf_radar(0.01, 0.1, init_estimate, init_covariance);
-    KalmanFusion fusion(0.1, 1e-3, 3.0);  // dt=0.1s，过程噪声小，测量噪声中等
+    KalmanFusion fusion(0.1, 1e-2, 3.0);  // dt=0.1s，过程噪声小，测量噪声中等
     KalmanFilter kf_fused(0.1, 1e-3, init_estimate, init_covariance);
 
     vector<Eigen::Vector2d> true_vector;
@@ -67,6 +70,15 @@ int main() {
         Eigen::Vector2d fused_obs_Kalmanfilter = kf_fused.update(fused.head<2>());
         fused_Kalmanfilter_Vector.emplace_back(fused_obs_Kalmanfilter);
     }
+
+    // 数据写入文件 CLion默认生成在 cmake-build-debug中
+    writeDataToFile("./data.txt", true_vector, false);
+    writeDataToFile("./data.txt", cam_vector, true);
+    writeDataToFile("./data.txt", cam_Kalmanfilter_Vector, true);
+    writeDataToFile("./data.txt", radar_vector, true);
+    writeDataToFile("./data.txt", radar_Kalmanfilter_Vector, true);
+    writeDataToFile("./data.txt", fused_vector, true);
+    writeDataToFile("./data.txt", fused_Kalmanfilter_Vector, true);
 
     //真实数据输出
     if (TRUE_DATA) {

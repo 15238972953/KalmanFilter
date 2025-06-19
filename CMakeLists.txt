@@ -18,5 +18,7 @@ add_executable(ceshi main.cpp
         KalmanFusion.cpp
         KalmanFilter.cpp
         KalmanFilter.h
+        WriteFile.cpp
+        WriteFile.h
 )
 
