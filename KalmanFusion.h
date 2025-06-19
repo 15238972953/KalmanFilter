@@ -4,6 +4,9 @@
 #include <iostream>
 #include <Eigen/Dense>
 
+extern const double initial_X;
+extern const double initial_Y;
+
 class KalmanFusion {
 public:
     KalmanFusion(double dt, double process_noise_std, double measurement_noise_std);

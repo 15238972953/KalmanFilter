@@ -23,14 +23,14 @@ const double initial_X = 5;
 const double initial_Y = 10;
 
 int main() {
-    srand(static_cast<unsigned int>(time(nullptr)));  // 设置随机种子
+//    srand(static_cast<unsigned int>(time(nullptr)));  // 设置随机种子，如果希望每次运行数据结果一致，请将此行注释掉
     // 初始状态估计为 (0, 0)，初始协方差为单位矩阵
     Eigen::Vector2d init_estimate(initial_X, initial_Y);
     Eigen::Matrix2d init_covariance = Eigen::Matrix2d::Identity();
 
-    KalmanFilter kf_cam(0.01, 0.1, init_estimate, init_covariance);  // Q, R, 初始估计, 初始协方差
-    KalmanFilter kf_radar(0.01, 0.1, init_estimate, init_covariance);
-    KalmanFusion fusion(0.1, 1e-2, 3.0);  // dt=0.1s，过程噪声小，测量噪声中等
+    KalmanFilter kf_cam(0.05, 0.05, init_estimate, init_covariance);  // Q, R, 初始估计, 初始协方差
+    KalmanFilter kf_radar(0.05, 0.05, init_estimate, init_covariance);
+    KalmanFusion fusion(0.1, 1e-1, 1.0);  // dt=0.1s，过程噪声小，测量噪声中等
     KalmanFilter kf_fused(0.1, 1e-3, init_estimate, init_covariance);
 
     vector<Eigen::Vector2d> true_vector;

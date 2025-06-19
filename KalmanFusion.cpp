@@ -23,7 +23,7 @@ KalmanFusion::KalmanFusion(double dt, double process_noise_std, double measureme
     R_ = measurement_noise_std * Eigen::Matrix2d::Identity();
 
     // 初始化状态
-    x_ << 5, 10, 0, 0;
+    x_ << initial_X, initial_Y, 0, 0;
 }
 
 // 输入为相机和雷达观测坐标，输出融合结果

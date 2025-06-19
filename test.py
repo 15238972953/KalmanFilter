@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
 import re
+import numpy as np
 
 # 开关变量：控制是否打印
 TRUE_DATA                = 1    
 CAM_DATA                 = 0
-CAM_KALMANFILTER_DATA    = 0
-RADAR_DATA               = 1
+CAM_KALMANFILTER_DATA    = 1
+RADAR_DATA               = 0
 RADAR_KALMANFILTER_DATA  = 1
-FUSION_DATA              = 0
+FUSION_DATA              = 1
 FUSION_KALMANFILTER_DATA = 0
 
 def parse_line(line):
@@ -36,21 +37,45 @@ if TRUE_DATA:
     x1, y1 = extract_xy(true_data)
     plt.plot(x1, y1, '-r', label='true_pos')  # 红色连线
 if CAM_DATA: 
+    # 评估
+    errors = np.array(cam_data) - np.array(true_data)
+    mse = np.mean(np.sum(errors**2, axis=1))
+    print(f"cam_data MSE: {mse:.4f}")
     x2, y2 = extract_xy(cam_data)
     plt.plot(x2, y2, '-g', label='cam_pos')
 if CAM_KALMANFILTER_DATA: 
+    # 评估
+    errors = np.array(cam_kalmanfilter_data) - np.array(true_data)
+    mse = np.mean(np.sum(errors**2, axis=1))
+    print(f"cam_kalmanfilter_data MSE: {mse:.4f}")
     x3, y3 = extract_xy(cam_kalmanfilter_data)
     plt.plot(x3, y3, '-b', label='cam_pos_kalmanfilter')
 if RADAR_DATA: 
+    # 评估
+    errors = np.array(radar_data) - np.array(true_data)
+    mse = np.mean(np.sum(errors**2, axis=1))
+    print(f"radar_data MSE: {mse:.4f}")
     x4, y4 = extract_xy(radar_data)
     plt.plot(x4, y4, '-m', label='radar_pos')
 if RADAR_KALMANFILTER_DATA: 
+    # 评估
+    errors = np.array(radar_kalmanfilter_data) - np.array(true_data)
+    mse = np.mean(np.sum(errors**2, axis=1))
+    print(f"radar_kalmanfilter_data MSE: {mse:.4f}")
     x5, y5 = extract_xy(radar_kalmanfilter_data)
     plt.plot(x5, y5, '-y', label='radar_pos_kalmanfilter')
 if FUSION_DATA:
+    # 评估
+    errors = np.array(fusion_data) - np.array(true_data)
+    mse = np.mean(np.sum(errors**2, axis=1))
+    print(f"fusion_data MSE: {mse:.4f}")
     x6, y6 = extract_xy(fusion_data)
     plt.plot(x6, y6, '-c', label='fused_pos')
 if FUSION_KALMANFILTER_DATA:
+    # 评估
+    errors = np.array(fusion_kalmanfilter_data) - np.array(true_data)
+    mse = np.mean(np.sum(errors**2, axis=1))
+    print(f"fusion_kalmanfilter_data MSE: {mse:.4f}")
     x7, y7 = extract_xy(fusion_kalmanfilter_data)
     plt.plot(x7, y7, '-k', label='fused_pos_kalmanfilter')
 
